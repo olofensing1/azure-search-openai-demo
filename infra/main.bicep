@@ -128,7 +128,8 @@ param chatGptDeploymentCapacity int = 0
 var chatGpt = {
   modelName: !empty(chatGptModelName)
     ? chatGptModelName
-    : startsWith(openAiHost, 'azure') ? 'gpt-35-turbo' : 'gpt-3.5-turbo'
+//    : startsWith(openAiHost, 'azure') ? 'gpt-35-turbo' : 'gpt-3.5-turbo'
+    : startsWith(openAiHost, 'azure') ? 'gpt-4' : 'gpt-4'
   deploymentName: !empty(chatGptDeploymentName) ? chatGptDeploymentName : 'chat'
   deploymentVersion: !empty(chatGptDeploymentVersion) ? chatGptDeploymentVersion : '0613'
   deploymentSkuName: !empty(chatGptDeploymentSkuName) ? chatGptDeploymentSkuName : 'Standard'
@@ -142,9 +143,10 @@ param embeddingDeploymentSkuName string = ''
 param embeddingDeploymentCapacity int = 0
 param embeddingDimensions int = 0
 var embedding = {
-  modelName: !empty(embeddingModelName) ? embeddingModelName : 'text-embedding-ada-002'
+//  modelName: !empty(embeddingModelName) ? embeddingModelName : 'text-embedding-ada-002'
+  modelName: !empty(embeddingModelName) ? embeddingModelName : 'text-embedding-3-large'
   deploymentName: !empty(embeddingDeploymentName) ? embeddingDeploymentName : 'embedding'
-  deploymentVersion: !empty(embeddingDeploymentVersion) ? embeddingDeploymentVersion : '2'
+  deploymentVersion: !empty(embeddingDeploymentVersion) ? embeddingDeploymentVersion : '1'
   deploymentSkuName: !empty(embeddingDeploymentSkuName) ? embeddingDeploymentSkuName : 'Standard'
   deploymentCapacity: embeddingDeploymentCapacity != 0 ? embeddingDeploymentCapacity : 30
   dimensions: embeddingDimensions != 0 ? embeddingDimensions : 1536
@@ -225,7 +227,14 @@ param useLocalHtmlParser bool = false
 
 var abbrs = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
-var tags = { 'azd-env-name': environmentName }
+//var tags = { 'azd-env-name': environmentName }
+
+var tags = union({
+  'azd-env-name': environmentName
+}, {
+  'kostenplaats': '463'
+  'omgeving': 'Ontwikkel'
+})
 
 var tenantIdForAuth = !empty(authTenantId) ? authTenantId : tenantId
 var authenticationIssuerUri = '${environment().authentication.loginEndpoint}${tenantIdForAuth}/v2.0'
